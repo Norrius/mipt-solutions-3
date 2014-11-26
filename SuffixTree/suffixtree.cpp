@@ -6,16 +6,16 @@ bool SuffixTree::Node::hasLink(char c)
 }
 
 SuffixTree::SuffixTree(const std::string &string) :
-    string(string),
+    string(string+'\x1f'),
     root(0),
     dummy(1),
     nodes({Node(), Node()}),
     activePoint(ReferencePair(root,0,0))
 {
     nodes[root].sufflink = dummy;
-    for (size_t i = 0; i < string.size(); ++i) {
-        if (!(nodes[dummy].hasLink(string[i]))) {
-            nodes[dummy].links[string[i]] = NodeLink(root, i, i+1);
+    for (size_t i = 0; i < this->string.size(); ++i) {
+        if (!(nodes[dummy].hasLink(this->string[i]))) {
+            nodes[dummy].links[this->string[i]] = NodeLink(root, i, i+1);
         }
     }
     buildTree();
@@ -58,7 +58,7 @@ void SuffixTree::canonicalizeReference(SuffixTree::ReferencePair *node)
     if (node->left != node->right) {
         // one jump back, one step forward
         NodeLink link = nodes[node->closest].links[string[node->left]];
-        while (link.right - link.left < node->right - node->left) {
+        while (link.right - link.left <= node->right - node->left) {
             // update with lower ancestor
             node->closest = link.index;
             node->left += link.right - link.left;
@@ -97,7 +97,7 @@ size_t SuffixTree::testAndSplit()
     }
     // add new inf-edge from the split point
     nodes.push_back(Node());
-    nodes[target].links[activePoint.right] = NodeLink(nodes.size()-1, activePoint.right, infty);
+    nodes[target].links[string[activePoint.right]] = NodeLink(nodes.size()-1, activePoint.right, infty);
     return target;
 }
 
@@ -107,7 +107,7 @@ bool SuffixTree::contains(const std::string &substring)
     size_t left = 0;
     size_t right = 0;
     NodeLink link;
-    for (size_t i = 0; i < string.size(); ++i) {
+    for (size_t i = 0; i < substring.size(); ++i) {
         if (left == right) {
             if (!nodes[node].hasLink(substring[i])) {
                 return false;

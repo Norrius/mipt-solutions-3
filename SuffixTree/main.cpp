@@ -11,7 +11,6 @@ int main()
         string s;
         cin >> s;
         SuffixTree tree(s);
-        cerr << "!";
 
         int q;
         cin >> q;
