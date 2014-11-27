@@ -1,7 +1,6 @@
 #include "suffixtree.h"
 
-bool SuffixTree::Node::hasLink(char c)
-{
+bool SuffixTree::Node::hasLink(char c) {
     return links.find(c) != links.end();
 }
 
@@ -10,8 +9,7 @@ SuffixTree::SuffixTree(const std::string &string) :
     root(0),
     dummy(1),
     nodes({Node(), Node()}),
-    activePoint(ReferencePair(root,0,0))
-{
+    activePoint(ReferencePair(root, 0, 0)) {
     nodes[root].sufflink = dummy;
     for (size_t i = 0; i < this->string.size(); ++i) {
         if (!(nodes[dummy].hasLink(this->string[i]))) {
@@ -21,8 +19,7 @@ SuffixTree::SuffixTree(const std::string &string) :
     buildTree();
 }
 
-void SuffixTree::buildTree()
-{
+void SuffixTree::buildTree() {
     for (size_t i = 0; i < string.length(); ++i) {
         addNextSymbol();
         ++activePoint.right;
@@ -30,8 +27,7 @@ void SuffixTree::buildTree()
     }
 }
 
-void SuffixTree::addNextSymbol()
-{
+void SuffixTree::addNextSymbol() {
     size_t previous = root;
     size_t current = testAndSplit();
     while (current != nodes.size()) {
@@ -53,8 +49,7 @@ void SuffixTree::addNextSymbol()
     }
 }
 
-void SuffixTree::canonicalizeReference(SuffixTree::ReferencePair *node)
-{
+void SuffixTree::canonicalizeReference(SuffixTree::ReferencePair *node) {
     if (node->left != node->right) {
         // one jump back, one step forward
         NodeLink link = nodes[node->closest].links[string[node->left]];
@@ -70,8 +65,7 @@ void SuffixTree::canonicalizeReference(SuffixTree::ReferencePair *node)
     }
 }
 
-size_t SuffixTree::testAndSplit()
-{
+size_t SuffixTree::testAndSplit() {
     // point of split node
     size_t target;
     if (activePoint.left == activePoint.right) {
@@ -91,41 +85,15 @@ size_t SuffixTree::testAndSplit()
         target = nodes.size();
         nodes.push_back(Node());
         // link the ancestor to the new node
-        nodes[activePoint.closest].links[string[link.left]] = NodeLink(target, link.left, targetIndex);
+        nodes[activePoint.closest].links[string[link.left]] =
+                NodeLink(target, link.left, targetIndex);
         // link the new node to the node below
-        nodes[target].links[string[targetIndex]] = NodeLink(link.index, targetIndex, link.right);
+        nodes[target].links[string[targetIndex]] =
+                NodeLink(link.index, targetIndex, link.right);
     }
     // add new inf-edge from the split point
     nodes.push_back(Node());
-    nodes[target].links[string[activePoint.right]] = NodeLink(nodes.size()-1, activePoint.right, infty);
+    nodes[target].links[string[activePoint.right]] =
+            NodeLink(nodes.size()-1, activePoint.right, infty);
     return target;
-}
-
-bool SuffixTree::contains(const std::string &substring)
-{
-    size_t node = root;
-    size_t left = 0;
-    size_t right = 0;
-    NodeLink link;
-    for (size_t i = 0; i < substring.size(); ++i) {
-        if (left == right) {
-            if (!nodes[node].hasLink(substring[i])) {
-                return false;
-            }
-            link = nodes[node].links[substring[i]];
-            left = link.left;
-            right = left + 1;
-        } else {
-            if (string[right] != substring[i]) {
-                return false;
-            }
-            ++right;
-        }
-        if (right == link.right) {
-            node = link.index;
-            left = 0;
-            right = 0;
-        }
-    }
-    return true;
 }

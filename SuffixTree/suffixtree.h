@@ -1,5 +1,5 @@
-#ifndef SUFFIXTREE_H
-#define SUFFIXTREE_H
+#ifndef SUFFIXTREE_SUFFIXTREE_H_
+#define SUFFIXTREE_SUFFIXTREE_H_
 #include <vector>
 #include <string>
 #include <limits>
@@ -8,8 +8,7 @@
 
 const size_t infty = std::numeric_limits<size_t>::max();
 
-class SuffixTree
-{
+class SuffixTree {
     struct NodeLink {
         size_t index;
         size_t left;
@@ -29,14 +28,9 @@ class SuffixTree
     };
 
     struct Node {
-//        size_t left;
-//        size_t right;
-//        size_t parent;
         size_t sufflink;
-        std::/*unordered_*/map<char, NodeLink> links;
+        std::map<char, NodeLink> links;
         Node() {}
-//        Node(size_t left, size_t right, size_t sufflink) :
-//            left(left), right(right), sufflink(sufflink) {}
         bool hasLink(char c);
     };
 
@@ -53,8 +47,8 @@ class SuffixTree
     void buildTree();
 
 public:
-    SuffixTree(const std::string &string);
+    explicit SuffixTree(const std::string &string);
     bool contains(const std::string &substring);
 };
 
-#endif // SUFFIXTREE_H
+#endif  // SUFFIXTREE_SUFFIXTREE_H_
