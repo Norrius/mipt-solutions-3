@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 #include "suffixtree.h"
 
+std::vector<int> findAllOccurences(const SuffixTree &tree,
+                                   const std::string &string, const std::string &substring);
 using namespace std;
 
 int main()
@@ -17,7 +19,7 @@ int main()
         while (q--) {
             string t;
             cin >> t;
-            cout << (tree.contains(t) ? "y" : "n") << '\n';
+            cout << (findAllOccurences(tree, s, t).empty() ? "n" : "y") << '\n';
         }
     }
 

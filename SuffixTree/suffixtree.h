@@ -46,9 +46,23 @@ class SuffixTree {
 
     void buildTree();
 
+    template<class Visitor>
+    void DfsTraverse(Visitor &visitor, size_t node) const {
+        visitor.onEnter(node);
+        for (auto it : nodes[node].links) {
+            NodeLink link = it.second;
+            if (visitor.onEdge(node, link.index, link.left, link.right)) {
+                DfsTraverse(visitor, link.index);
+            }
+        }
+        visitor.onExit(node);
+    }
 public:
     explicit SuffixTree(const std::string &string);
-    bool contains(const std::string &substring);
+    template<class Visitor>
+    void DfsTraverse(Visitor &visitor) const {
+        DfsTraverse(visitor, root);
+    }
 };
 
 #endif  // SUFFIXTREE_SUFFIXTREE_H_
