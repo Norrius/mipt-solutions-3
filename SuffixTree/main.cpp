@@ -1,12 +1,33 @@
 #include <bits/stdc++.h>
-#include "suffixtree.h"
+#include "suffixarray.h"
+#include "gtest/gtest.h"
 
-std::vector<int> findAllOccurences(const SuffixTree &tree,
-                                   const std::string &string, const std::string &substring);
 using namespace std;
 
-int main()
-{
+int main(int argc, char **argv) {
+#ifdef GTEST
+    ::testing::GTEST_FLAG(print_time) = false;
+    ::testing::InitGoogleTest(&argc, argv);
+
+    return RUN_ALL_TESTS();
+#else
+    string s;
+    cin >> s;
+
+    auto v = suffixArray(s);
+
+    for (auto e : v) {
+        cout << e << ' ';
+    }
+    cout << endl;
+
+    return 0;
+#endif
+}
+
+
+/*
+
     int k;
     cin >> k;
     while (k--) {
@@ -19,10 +40,12 @@ int main()
         while (q--) {
             string t;
             cin >> t;
-            cout << (findAllOccurences(tree, s, t).empty() ? "n" : "y") << '\n';
+            auto v = findAllOccurences(tree, s, t);
+            cout << (v.empty() ? "n" : "y " + to_string(v.size())) << '\n';
+            for (auto e : v) {
+                cout << e << ' ';
+            }   cout << endl;
         }
     }
 
-    return 0;
-}
-
+*/
